@@ -345,6 +345,7 @@ export const listBlogsByUser = async (req, res) => {
     const blogs = await Blog.find({ postedBy: userId, published: true })
       .populate('categories', '_id name slug')
       .populate('postedBy', '_id name ')
+      .sort({ createdAt: -1 })
       .select(
         '_id published title slug postedBy categories createdAt updatedAt  ',
       )
