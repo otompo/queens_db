@@ -7,12 +7,12 @@ export const createCategory = async (req, res) => {
     const { name } = req.body;
     let slug = slugify(name).toLowerCase();
     const alreadyExist = await Category.findOne({ slug }).exec();
-    if (alreadyExist) return res.status(400).send('Category name exist');
+    if (alreadyExist) return res.status(400).send({error:'Category name exist'});
     const category = await new Category({ name, slug }).save();
     res.json(category);
   } catch (err) {
     console.log(err);
-    return res.status(400).send('Category create failed. Try again.');
+    return res.status(400).send({error:'Category create failed. Try again.'});
   }
 };
 
@@ -44,7 +44,7 @@ export const getCategories = async (req, res) => {
     res.status(200).json({ total: categories.length, categories });
   } catch (err) {
     console.log(err);
-    return res.status(400).send('Categories not found. Try again.');
+    return res.status(400).send({error:'Categories not found. Try again.'});
   }
 };
 
@@ -52,7 +52,7 @@ export const deleteCategory = async (req, res) => {
   try {
     const slug = req.params.slug.toLowerCase();
     const category = await Category.findOneAndRemove({ slug }).exec();
-    if (!category) return res.status(400).send('Category not found');
+    if (!category) return res.status(400).send({error:'Category not found'});
     res.json({ message: 'Category Deleted Successfully' });
   } catch (err) {
     console.log(err);
