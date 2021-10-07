@@ -52,7 +52,7 @@ export const createBlog = (req, res) => {
     if (files.image) {
       if (files.image.size > 10000000) {
         return res.status(400).json({
-          error: 'Image should be less then 1mb in size',
+          error: 'Image should be less than 1mb in size',
         });
       }
       blog.image.data = fs.readFileSync(files.image.path);
