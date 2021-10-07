@@ -22,7 +22,7 @@ router.route('/profile/:userId').get(isAuth, getUserProfile);
 router.route('/profile/:username').put(isAuth, updateProfile);
 router.route('/profile/password/:username').put(isAuth, updateUserPassword);
 
-router.route('/make-user-admin/:username').put(adminMiddleware, makeUserAdmin);
+router.route('/make-user-admin/:username').put(isAuth, adminMiddleware, makeUserAdmin);
 router
   .route('/remove-user-admin/:username')
   .put(isAuth, adminMiddleware, removeAsAdmin);
