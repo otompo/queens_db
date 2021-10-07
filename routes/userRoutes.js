@@ -11,7 +11,6 @@ import {
   updateUserPassword,
   userstats,
 } from '../controllers/authController';
-import { userById } from '../controllers/user';
 import { adminMiddleware, isAuth, requireSignin } from '../middlewares';
 import { userSignupValidator } from '../validators';
 const router = express.Router();
@@ -32,5 +31,4 @@ router.route('/getmembersusers').get(isAuth, adminMiddleware, getMembersUsers);
 
 router.route('/stats').get(userstats);
 
-// router.param('userId', userById);
 module.exports = router;
