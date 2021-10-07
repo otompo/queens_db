@@ -25,44 +25,7 @@ export const register = (req, res) => {
     });
   });
 };
-/*
-export const register = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-    // username
-    let username = shortId.generate();
-    // validation
-    if (!name) {
-      return res.status(404).send('name is required');
-    }
-    if (!password || password.length < 6) {
-      return res
-        .status(404)
-        .send('password is required and should be min 6 characters long');
-    }
-    let userExist = await User.findOne({ email }).exec();
-    if (userExist) return res.status(400).send('Email is taken ');
-    // hash password
-    // const hashedPassword = await hashPassword(password);
 
-    // register user
-    const user = new User({
-      email,
-      name,
-      username,
-      password,
-    });
-    await user.save();
-
-    user.password = undefined;
-
-    res.status(200).json({ mesage: 'User Save Succeffuly', user });
-  } catch (err) {
-    console.log(err);
-    res.status('404').send('Error. Try again ');
-  }
-};
-*/
 
 export const login = (req, res) => {
   const { email, password } = req.body;
@@ -114,7 +77,7 @@ export const currentUser = async (req, res) => {
     // return res.json({ ok: true });
   } catch (err) {
     console.log(err);
-    return res.status(400).send('Please login is required');
+    return res.status(400).send({error:'Please login is required'});
   }
 };
 
@@ -130,7 +93,7 @@ export const makeUserAdmin = async (req, res) => {
       },
       { new: true },
     ).exec();
-    res.send(`${user.name}  is now an Admin `);
+    res.send({message:`${user.name}  is now an Admin `});
     // console.log(roleUpdated);
   } catch (err) {
     console.log(err);
@@ -150,7 +113,7 @@ export const removeAsAdmin = async (req, res) => {
       },
       { new: true },
     ).exec();
-    res.send(`${user.name}  is remove as an Admin `);
+    res.send({message:`${user.name}  is remove as an Admin `});
     // console.log(roleUpdated);
   } catch (err) {
     console.log(err);
@@ -165,7 +128,7 @@ export const getAdminUsers = async (req, res) => {
       .sort({ createdAt: -1 })
       .exec();
     res.json({ total: users.length, users });
-    if (!users) return res.status(400).send('Users not found');
+    if (!users) return res.status(400).send({error:'Users not found'});
   } catch (err) {
     console.log(err);
     return res.status(400).send(err.message);
@@ -179,7 +142,7 @@ export const getMembersUsers = async (req, res) => {
       .sort({ createdAt: -1 })
       .exec();
     res.json({ total: users.length, users });
-    if (!users) return res.status(400).send('Users not found');
+    if (!users) return res.status(400).send({error:'Users not found'});
   } catch (err) {
     console.log(err);
     return res.status(400).send(err.message);
@@ -192,7 +155,7 @@ export const getUserPublicProfile = async (req, res) => {
     const user = await User.findOne({ username })
       .select('-password -role -username -hashed_password -salt')
       .exec();
-    if (!user) return res.status(400).send('User not found');
+    if (!user) return res.status(400).send({error:'User not found'});
     res.json(user);
   } catch (err) {
     console.log(err);
@@ -204,7 +167,7 @@ export const getUserProfile = async (req, res) => {
   try {
     // const userId = req.params;
     const user = await User.findById(req.params.userId).exec();
-    if (!user) return res.status(400).send('User not found');
+    if (!user) return res.status(400).send({error:'User not found'});
     res.json(user);
   } catch (err) {
     console.log(err);
@@ -217,10 +180,10 @@ export const updateProfile = async (req, res) => {
     let { name, email, username } = req.body;
 
     let userExist = await User.findOne({ email }).exec();
-    if (userExist) return res.status(400).send('Email is taken ');
+    if (userExist) return res.status(400).send({error:'Email is taken '});
 
     const user = await User.findOne({ username: req.params.username });
-    if (!user) return res.status(400).send('User not found');
+    if (!user) return res.status(400).send({error:'User not found'});
     // hash password
 
     if (user) {
@@ -266,7 +229,7 @@ export const updateUserPassword = async (req, res) => {
         password: hashedPassword,
       },
     ).exec();
-    // if (!userupdated) return res.status(400).send('Can not update user');
+    // if (!userupdated) return res.status(400).send({error:'Can not update user'});
     res.send({ Ok: true });
   } catch (err) {
     console.log(err);
@@ -274,22 +237,6 @@ export const updateUserPassword = async (req, res) => {
   }
 };
 
-/**
-export const userPhoto = (req, res) => {
-  const username = req.params.username;
-  User.findOne({ username }).exec((err, user) => {
-    if (err || !user) {
-      return res.status(400).json({
-        error: 'User not found',
-      });
-    }
-    if (user.photo.data) {
-      res.set('Content-Type', user.photo.contentType);
-      return res.send(user.photo.data);
-    }
-  });
-}; 
-  */
 
 export const userstats = async (req, res) => {
   const date = new Date();
