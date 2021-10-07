@@ -121,12 +121,12 @@ export const listAllBlogsCategories = async (req, res) => {
     if (!blogs) return res.status(400).send('blogs not found');
 
     const categories = await Category.find({}).exec();
-    if (!categories) return res.status(400).send('Categories not found');
+    if (!categories) return res.status(400).send({error:'Categories not found'});
 
     res.send({ blogs });
   } catch (err) {
     console.log(err);
-    return res.status(400).send('Can not fetch blog data');
+    return res.status(400).send({error:'Can not fetch blog data'});
   }
 };
 
@@ -160,7 +160,7 @@ export const getSingleUnplishBlog = async (req, res) => {
         '_id title body mtitle slug categories  postedBy createdAt updateAt',
       )
       .exec();
-    if (!blog) return res.status(400).send('blog not found');
+    if (!blog) return res.status(400).send({error:'blog not found'});
     res.json(blog);
   } catch (err) {
     console.log(err);
@@ -173,7 +173,7 @@ export const getImage = async (req, res) => {
   try {
     const slug = req.params.slug.toLowerCase();
     const blogdata = await Blog.findOne({ slug }).select('image').exec();
-    if (!blogdata) return res.status(400).send('image not found');
+    if (!blogdata) return res.status(400).send({error:'image not found'});
     res.set('Content-Type', blogdata.image.contentType);
     res.send(blogdata.image.data);
   } catch (err) {
@@ -263,7 +263,7 @@ export const listRelated = async (req, res) => {
       .select('title slug excerpt postedBy createdAt updatedAt')
       .exec();
     console.log(req.body.blog);
-    if (!blogs) return res.status(400).send('Blog not found');
+    if (!blogs) return res.status(400).send({error:'Blog not found'});
     res.json(blogs);
   } catch (err) {
     console.log(err);
@@ -282,11 +282,11 @@ export const publishBlog = async (req, res) => {
       { published: true },
       { new: true },
     ).exec();
-    if (!updated) return res.status(400).send('Can not update blog');
+    if (!updated) return res.status(400).send({error:'Can not update blog'});
     res.send({ ok: true });
   } catch (err) {
     console.log(err);
-    return res.status(400).send('Publish blog failed');
+    return res.status(400).send({error:'Publish blog failed'});
   }
 };
 
@@ -300,7 +300,7 @@ export const unpublishBlog = async (req, res) => {
       { published: false },
       { new: true },
     ).exec();
-    if (!updated) return res.status(400).send('Can not update blog');
+    if (!updated) return res.status(400).send({error:'Can not update blog'});
     res.send({ ok: true });
   } catch (err) {
     console.log(err);
@@ -314,11 +314,11 @@ export const listPublishBlogs = async (req, res) => {
       .populate('postedBy', '_id name')
       .sort({ createdAt: -1 })
       .select('_id title excerpt slug postedBy published createdAt updatedAt ');
-    if (!data) return res.status(400).send('Can not find data');
+    if (!data) return res.status(400).send({error:'Can not find data'});
     res.json(data);
   } catch (err) {
     console.log(err);
-    return res.status(400).send('Can not fetch blog data');
+    return res.status(400).send({error:'Can not fetch blog data'});
   }
 };
 
@@ -328,18 +328,18 @@ export const listUnpublishBlogs = async (req, res) => {
       .populate('postedBy', '_id name')
       .sort({ createdAt: -1 })
       .select('_id title excerpt slug postedBy published createdAt updatedAt');
-    if (!data) return res.status(400).send('Can not find data');
+    if (!data) return res.status(400).send({error:'Can not find data'});
     res.json(data);
   } catch (err) {
     console.log(err);
-    return res.status(400).send('Can not fetch blog data');
+    return res.status(400).send({error:'Can not fetch blog data'});
   }
 };
 
 export const listBlogsByUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.userId).exec();
-    if (!user) return res.status(400).send('User not found');
+    if (!user) return res.status(400).send({error:'User not found'});
 
     let userId = user._id;
     const blogs = await Blog.find({ postedBy: userId, published: true })
@@ -349,10 +349,10 @@ export const listBlogsByUser = async (req, res) => {
         '_id published title slug postedBy categories createdAt updatedAt  ',
       )
       .exec();
-    if (!blogs) return res.status(400).send('User blogs not found');
+    if (!blogs) return res.status(400).send({error: 'User blogs not found'});
     res.json(blogs);
   } catch (err) {
     console.log(err);
-    return res.status(400).send('User blog not found');
+    return res.status(400).send({error:'User blog not found'});
   }
 };
