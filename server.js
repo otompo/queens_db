@@ -36,8 +36,13 @@ app.use(cors());
 // auto load routes
 readdirSync('./routes').map((r) => app.use('/api', require(`./routes/${r}`)));
 
+app.get('/', (req, res) => {
+  res.send(`<h1>ANAM WASH SERVER</h1>`);
+});
+
+
 // port
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 80;
 
 app.listen(port, () => {
   console.log(`Server is runing on http://localhost:${port}`);
