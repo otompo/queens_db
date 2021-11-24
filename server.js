@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 
 
 // port
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 8000;
 
 app.listen(port, () => {
   console.log(`Server is runing on http://localhost:${port}`);
