@@ -14,6 +14,7 @@ import {
   publishBlog,
   unpublishBlog,
   getSingleUnplishBlog,
+  getSinglepublishBlog
 } from './../controllers/blogController';
 
 const router = express.Router();
@@ -25,7 +26,11 @@ router.route('/blogs/list-blogs-categories').post(listAllBlogsCategories);
 router.route('/blog/:slug').get(getSingleBlog);
 router
   .route('/blog/unpublish/:slug')
-  .get(adminMiddleware, getSingleUnplishBlog);
+  .get(isAuth, adminMiddleware, getSingleUnplishBlog);
+router
+  .route('/blog/unpublish/:slug')
+  .get(isAuth, adminMiddleware, getSinglepublishBlog);
+
 router.route('/blog/:slug').delete(isAuth, adminMiddleware, deleteBlog);
 router.route('/blog/:slug').put(isAuth, adminMiddleware, updateBlog);
 router.route('/blog/img/:slug').get(getImage);
