@@ -28,7 +28,7 @@ router
   .route('/blog/unpublish/:slug')
   .get(isAuth, adminMiddleware, getSingleUnplishBlog);
 router
-  .route('/blog/unpublish/:slug')
+  .route('/blog/publish/:slug')
   .get(isAuth, adminMiddleware, getSinglepublishBlog);
 
 router.route('/blog/:slug').delete(isAuth, adminMiddleware, deleteBlog);
