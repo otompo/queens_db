@@ -130,6 +130,7 @@ export const listAllBlogsCategories = async (req, res) => {
   }
 };
 
+
 // Get Single Blog
 export const getSingleBlog = async (req, res) => {
   try {
@@ -153,20 +154,40 @@ export const getSingleBlog = async (req, res) => {
 export const getSingleUnplishBlog = async (req, res) => {
   try {
     const slug = req.params.slug.toLowerCase();
-    const blog = await Blog.findOne({ slug, published: false })
+    const blog = await Blog.findOne({ slug, published: { $ne: true } })
       .populate('categories', '_id name slug')
       .populate('postedBy', '_id name')
       .select(
         '_id title body mtitle slug categories  postedBy createdAt updateAt',
       )
       .exec();
-    if (!blog) return res.status(400).send({error:'blog not found'});
+    if (!blog) return res.status(400).send('blog not found');
     res.json(blog);
   } catch (err) {
     console.log(err);
     return res.status(400).send(err.message);
   }
 };
+
+// Get Single publish Blog
+export const getSinglepublishBlog = async (req, res) => {
+  try {
+    const slug = req.params.slug.toLowerCase();
+    const blog = await Blog.findOne({ slug, published: { $ne: false } })
+      .populate('categories', '_id name slug')
+      .populate('postedBy', '_id name')
+      .select(
+        '_id title body mtitle slug categories  postedBy createdAt updateAt',
+      )
+      .exec();
+    if (!blog) return res.status(400).send('blog not found');
+    res.json(blog);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+};
+
 
 // get blog image
 export const getImage = async (req, res) => {
